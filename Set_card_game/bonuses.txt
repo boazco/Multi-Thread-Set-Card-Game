@@ -1,0 +1,65 @@
+BONUS CHALLENGE FORM
+--------------------
+
+For each bonus challenge you have implemented, please replace the sentence "We are not entitled to this bonus."
+with a short description of:
+
+1. How it was implemented in your code
+2. Where it was used (in which class methods).
+3. How you tested that it is working correctly.
+
+--------------------
+
+1. Fully supporting all configuration fields and avoiding the use of magic numbers
+
+    1. How it was implemented in your code:
+    We used env.config."field" where ever we needed to use a number, and when there wasn't any configuration field that suited, we created a new final static field.
+
+    2. Where it was used (in which class methods).
+    We created a final field in the table class, and we used the configuration fields in the Player::run, Player::point, Player::penalty, Dealer::placeCardsOnTable, Dealer::sleepUntilWokenOrTimeout, Dealer::updateTimerDisplay, Dealer::removeAllCardsFromTable, Dealer::announceWinners, Dealer::randomTableSlots.
+
+    3. How you tested that it is working correctly.
+    Printing the configuration fields and checking that it is the same value as in the configuration file.
+
+--------------------
+
+2. Terminating all threads (that you created) gracefully and in reverse order to the order they were created in.
+
+    1. How it was implemented in your code
+    At first the dealer thread is created in the main function. 
+    In the Dealer::run method we're creating the players's threads in order from the thread with the smallest ID to the thread with the biggest ID.
+    In the Dealer::terminate method we're using a 'for' loop to terminate the players's threads in order from the thread with the bigest ID to the thread with the smallest ID. Then we're terminating the dealer's thread.  
+    
+    2. Where it was used (in which class methods).
+    At Dealer::terminate.
+    
+    
+    3. How you tested that it is working correctly.
+    Looked at the log file after many runs of the game.
+
+--------------------
+
+3. Handling the config.turnTimeoutMillis value as follows:
+config.turnTimeoutMillis < 0: display nothing.
+config.turnTimeoutMillis = 0: display a timer since the last action (reshuffle or set collected).
+Note: in modes without a countdown timer the dealer must ensure there is always at least one legal set on the table.
+
+We are not entitled to this bonus.
+
+--------------------
+
+4. Making sure that the threads do not wake up unless some actual job needs to be done (e.g., a value needs to be
+changed on the display, key input needs to be handled, etc.) and the only threads created by you are:
+1 thread per player + 1 additional thread for non-human players.
+
+    1. How it was implemented in your code
+    In player::createArtificialIntelligence, the ai thread is trying to use the keyPresses method, but in this method the keyPressedQueue is syncronized so the thread it waiting for the queue to be released.
+    In dealer::sleepUntilWokenOrTimeout the dealer thread is sleeping until it needs to update the timer or checking a set that was sent by one of the players.
+    In player::pullingFromKeyPressQ and in player::submittingSet the keyPressedQueue is being syncronized so the player waits while the latest 3 slots that the player chose are being checked by the dealer wether they're a set or not.
+
+    2. Where it was used (in which class methods).
+    It is used in all the functions that we're mantioned above.
+
+    3. How you tested that it is working correctly.
+    We run the game many times and there we're no deadlocks or livelocks.
+  
